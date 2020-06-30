@@ -1,21 +1,52 @@
-import React from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
-import { Text, FAB } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, StyleSheet, SafeAreaView, FlatList } from 'react-native';
+import { Text, FAB, List } from 'react-native-paper';
+import Header from '../component/Header';
 
-export default function ViewNotes({navigation}) {
+export default function ViewNotes({ navigation }) {
+
+  const [notes, setNotes] = useState([])
+
+  const addNotes = note => {
+    note.id = notes.length + 1
+    setNotes([...notes, note])
+  }
+
   return (
+    <>
+      <Header titleText='Simple Note Taking App' />
       <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>Note</Text>
-        </View>
+        {note.length === 0 ? (
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Note</Text>
+          </View>
+        ) : (
+            <FlatList
+              data={notes}
+              renderItem={({ item }) => (
+                <List.Item
+                  title={item.note.noteTitle}
+                  description={item.note.noteDescription}
+                  descriptionNumberOfLines={1}
+                  titleStyle={styles.listTitle}
+                  onPress={() => deleteNote(item.id)}
+                />
+              )}
+              keyExtractor={item => item.id.toString()}
+            />
+          )}
         <FAB
           style={styles.fab}
           small
-          icon="plus"
+          icon='plus'
           label='Add a new Note'
-          onPress={() => navigation.navigate('AddNotes')}
+          onPress={() => navigation.navigate('AddNotes', {
+            addNote
+          })
+          }
         />
       </View>
+    </>
   );
 }
 

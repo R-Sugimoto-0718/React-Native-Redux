@@ -1,16 +1,60 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, StyleSheet, TextInput } from 'react-native';
+import { Text, IconButton, FAB } from 'react-native-paper';
+import Header from '../component/Header';
 
-export default function AddNotes() {
+export default function AddNotes({ navigation }) {
+
+  const [noteTitle, setNoteTitle] = useState('')
+  const [noteDescription, setNoteDescription] = useState('')
+
+  function onSaveNote() {
+      navigation.state.params.addNote({ noteTitle, noteDescription })
+      navigation.goBack()
+  }
+
   return (
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>Add Notes Modal Screen</Text>
-        </View>
-      </View>
-  );
+      <>
+          <Header titleText='Add a New Note' />
+          <IconButton
+              icon="close"
+              size={25}
+              color='white'
+              onPress={() => navigation.goBack()}
+              style={styles.iconButton}
+          />
+
+          <View style={styles.container}>
+              <TextInput
+                  placeholder="Add Note Title here"
+                  value={noteTitle}
+                  mode='outlined'
+                  onChangeText={setNoteTitle}
+                  style={styles.title}
+              />
+              <TextInput
+                  placeholder="Add Note Description"
+                  value={noteDescription}
+                  onChangeText={setNoteDescription}
+                  mode="flat"
+                  multiline={true}
+                  style={styles.text}
+                  scrollEnabled={true}
+                  returnKeyLabel='done'
+                  blurOnSubmit={true}
+              />
+              <FAB
+                  style={styles.fab}
+                  small
+                  icon="check"
+                  disabled={noteTitle == '' ? true : false}
+                  onPress={() => onSaveNote()}
+              />
+          </View>
+      </>
+  )
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -33,19 +77,22 @@ const styles = StyleSheet.create({
   },
   title: {
       fontSize: 24,
-      marginBottom: 16
+      marginBottom: 16,
+      borderColor: 'black'
   },
   text: {
-      height: 300,
-      fontSize: 16
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      fontSize: 16,
+      backgroundColor: '#F6F6F4'
   },
   fab: {
       position: 'absolute',
-      margin: 20,
+      margin: 30,
       right: 0,
       bottom: 0,
       backgroundColor: '#219653'
   }
 
 })
-
